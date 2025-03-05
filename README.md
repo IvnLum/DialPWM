@@ -21,7 +21,23 @@ Tested with no luck, signals are completely inconsistent.
 
 <br/>
 
-## Testing Setup
+## Building
+
+Clone & Build with rust **cargo**
+```bash
+cd DialPWM/app
+cargo build --release
+```
+
+## Testing
+> DialPWM [Serial Link] [Baud Rate] [Serial Pinned Thread] [PWM duty period] [PWM tick period] [PWM generator Pinned Thread]
+```bash
+target/debug/DialPWM -l /dev/ttyUSB1 -b 460800 -s 0 -c 20000 -t 1 -p 1
+```
+
+<br/>
+
+## Testbench
 
 ### Using physical registers to achieve incoming UART RX data buffering from USB-UART bridge.
 Sequential logic brief explanation:
