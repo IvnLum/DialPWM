@@ -1,10 +1,13 @@
 # DialPWM
 
 Generate and test PWM signals with no dedicated controller through UART & register buffering.
+<p align="center">
+  <img height=300 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/N.png" />
+</p>
 
 
 ## Direct PWM Generation using CPU
-Using **CPU PWM** simulation, it aims to provide a fast way of testing hardware control relying on PWM signals using simple registers based buffer as a **passthrough**.
+Using **CPU PWM** simulation, it aims to provide a fast way of testing hardware control relying on PWM signals using an USB-UART bridge and a register based buffer as a **passthrough**.
 
 <br/>
 
@@ -15,3 +18,29 @@ This software relies in the usage of **spin-locks**, **thread-pinning**, and a *
 
 > **Note:** Running it from a VM is discouraged due to the increase of cache misses, and physical-virtual cpu topological cache binding trickery it implies.
 Tested with no luck, signals are completely inconsistent.
+
+<br/>
+
+## Testing Setup
+
+### Using physical registers to achieve incoming UART RX data buffering from USB-UART bridge.
+Sequential logic brief explanation:
+
+- Registers load **rx** until the **stop condition** is reached
+- Detect **"full byte receive"** combinational function will wait for a falling edge clock signal to generate a rising edge one on the parallel load register.
+- Main register clear is delayed to avoid parallel register copying cleared content.
+  
+<p align="center">
+  <img height=900 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/B.png" />
+</p>
+
+### Using HDL IP design equivalent (VHDL source included) targeted at Basys3
+
+Design implemented IPs:
+
+- Full UART tx/rx module (no parity)
+- Output parallel bits as **std_vector(7 downto 0)** signal
+  
+<p align="center">
+  <img height=850 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/A.png" />
+</p>
