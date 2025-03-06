@@ -69,9 +69,30 @@ target/debug/DialPWM -l /dev/ttyUSB1 -b 460800 -s 0 -c 20000 -t 1 -p 1
 <p align="center">
   <img height=570 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/A.png" />
 </p>
+
+
+## Used Test bench
+
+- ### Used test bench for development / testing:
+  - 1x Digilent's Basys3
+  - 1x 2-wire GPU Brushless Fan
+  - 1x 4-wire CPU Brushless Fan
+  - 1x TIP120 (PWM Control for the 2 wire Fan)
+  - 1x MG 996R Servo
+  - 5v Power supply (Wall Charger)
+
+<br/>
+
 <p align="center">
   <img height=500 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/T.png" />
 </p>
+
+<br/>
+
+- ### Actual Setup:
+  Nothing more, nothing less...
+<br/>
+
 <p align="center">
   <img height=500 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/fan.gif" alt="animated" />
 </p>
