@@ -11,6 +11,10 @@ Using **CPU PWM** simulation, it aims to provide a fast way of testing hardware 
 
 <br/>
 
+<p align="center">
+  <img height=300 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/servo.gif" alt="animated" />
+</p>
+
 ### About signal generation precision
 Targeted at **non**-RTOS based systems such as Windows, Linux (non-RT versions).
 
