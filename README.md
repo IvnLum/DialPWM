@@ -2,7 +2,7 @@
 
 Generate and test PWM signals with no dedicated controller through UART & register buffering.
 <p align="center">
-  <img height=300 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/N.png" />
+  <img height=300 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_rounded.png" />
 </p>
 
 
@@ -57,7 +57,7 @@ target/debug/DialPWM -l /dev/ttyUSB1 -b 460800 -s 0 -c 20000 -t 1 -p 1
   - Main register clear is delayed to avoid parallel register copying cleared content.
   
 <p align="center">
-  <img height=600 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/B.png" />
+  <img height=600 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/registers.png" />
 </p>
 
 - ### Using HDL IP design equivalent (VHDL source included) targeted at Basys3
@@ -67,7 +67,7 @@ target/debug/DialPWM -l /dev/ttyUSB1 -b 460800 -s 0 -c 20000 -t 1 -p 1
   - Output parallel bits as **std_vector(7 downto 0)** signal
   
 <p align="center">
-  <img height=570 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/A.png" />
+  <img height=570 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/basys3.png" />
 </p>
 
 
@@ -84,7 +84,7 @@ target/debug/DialPWM -l /dev/ttyUSB1 -b 460800 -s 0 -c 20000 -t 1 -p 1
 <br/>
 
 <p align="center">
-  <img height=500 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/T.png" />
+  <img height=800 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/testbench.png" />
 </p>
 
 <br/>
