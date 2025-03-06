@@ -27,7 +27,7 @@ struct Args {
     /// Serial write handler thread ID [0-99]
     #[arg(short, long)]
     serial_write_thread_id: usize,
-    /// PWM Full cycle period in ms
+    /// PWM Full cycle period in us
     #[arg(short, long)]
     cycle_period: u32,
     /// PWM tick period in us
