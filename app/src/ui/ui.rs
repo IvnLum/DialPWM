@@ -2,17 +2,30 @@ use fltk::prelude::*;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 
-type UpdateDutyFnMutexTuple = (fn(Arc<Mutex<f32>>, f32) -> (), Arc<Mutex<f32>>);
-type UpdateMaskFnMutexTuple = (fn(Arc<Mutex<u8>>, u8) -> (), Arc<Mutex<u8>>);
+type UpdateDutyFnMutexTuple = (fn(Arc<Mutex<f32>>, f32) -> (), Arc<[Arc<Mutex<f32>>;8]>);
+
+pub struct DialCtrl {
+    pub value: f32,
+    pub min: f32,
+    pub max: f32,
+    pub scale: f32,
+}
+impl DialCtrl {
+    fn new(value:f32, min:f32, max:f32, scale:f32) -> DialCtrl {
+        DialCtrl {value:value, min:min, max:max, scale:scale}
+    }
+}
+
+unsafe impl Sync for DialCtrl {}
+impl Clone for DialCtrl {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+impl Copy for DialCtrl {}
+unsafe impl Send for DialCtrl {}
 
 pub static UI_UPDATE_DUTY_FN: OnceLock<UpdateDutyFnMutexTuple> = OnceLock::new();
-pub static UI_UPDATE_MASK_FN: OnceLock<UpdateMaskFnMutexTuple> = OnceLock::new();
-static CURRENT_DUTY: Mutex<f32> = Mutex::new(0.0_f32);
-static CURRENT_MASK: Mutex<u8> = Mutex::new(0x00_u8);
-static A_DUTY: Mutex<f32> = Mutex::new(0.0_f32);
-static B_DUTY: Mutex<f32> = Mutex::new(0.0_f32);
-static DIAL_BUFFERED_VALUE: Mutex<f32> = Mutex::new(0.0_f32);
-static SCALE: f32 = 1e-2_f32;
 static DIAL_TXT_REF: OnceLock<Arc<Mutex<Widget>>> = OnceLock::new();
 static DIAL_TXT_REF_SET: AtomicBool = AtomicBool::new(false);
 
@@ -61,13 +74,13 @@ fn input_parse_update_mask(input: &mut Input, upd_u8: &Mutex<u8>) {
 ///
 /// * ()
 ///
-fn handle_ref_fn_call_0() {
+fn handle_ref_fn_call_0(idx: usize) {
     let (func, v) = UI_UPDATE_DUTY_FN
         .get()
         .expect("Duty update handler NOT set");
-    func(v.clone(), *CURRENT_DUTY.lock().expect("Mutex err"));
+    func(v.clone()[idx].clone(), *CURRENT_DUTY.lock().expect("Mutex err"));
 }
-
+/*
 /// Merge referenced (function, mutexed_value) tuple, by executing it unwrapping the value itself #2
 ///
 /// Arguments:
@@ -79,7 +92,7 @@ fn handle_ref_fn_call_1() {
         .get()
         .expect("Mask update handler NOT set");
     func(v.clone(), *CURRENT_MASK.lock().expect("Mutex err"));
-}
+}*/
 
 /// Update dial labeled current duty value
 ///
@@ -130,8 +143,8 @@ fn update_duty_value() {
     let diff = *B_DUTY.lock().expect("Load B duty Error") - a;
     *CURRENT_DUTY.lock().expect("Err") = a + value * diff;
 
-    to_ui_update_last_duty();
-    handle_ref_fn_call_0();
+ //   to_ui_update_last_duty();
+    handle_ref_fn_call_0(0);
 }
 
 /// Update A (left sided text from UI) duty callback function
@@ -155,7 +168,7 @@ fn from_ui_set_b_duty(input: &mut Input) {
     input_parse_update_float(input, &B_DUTY, SCALE);
     update_duty_value();
 }
-
+/*
 /// Update bitmask callback function
 ///
 /// Arguments:
@@ -175,7 +188,7 @@ fn from_ui_set_mask(input: &mut Input) {
 ///
 fn from_ui_update_mask(_: &mut Button) {
     handle_ref_fn_call_1();
-}
+}*/
 
 /// Update Dial callback function
 ///
@@ -188,7 +201,7 @@ fn from_ui_on_dial_change(dial: &mut Dial) {
     *DIAL_BUFFERED_VALUE
         .lock()
         .expect("Load buffered dial value Error") = value;
-
+/*
     if !DIAL_TXT_REF_SET.load(Ordering::SeqCst) {
         if let Some(parent) = dial.parent() {
             if let Some(child) = parent.child(6) {
@@ -202,7 +215,7 @@ fn from_ui_on_dial_change(dial: &mut Dial) {
         } else {
             println!("Error: No referenced parent");
         }
-    }
+    }*/
 
     update_duty_value();
 }

@@ -19,15 +19,14 @@ pub fn pwm_ctrl(
     byte: RawPtr<u8>,
     cycle_period: Duration,
     tick_period: Duration,
-    duty: Arc<Mutex<f32>>,
-    mask: Arc<Mutex<u8>>,
+    duty: Arc<[Arc<Mutex<f32>>; 8]>,
     end: Arc<AtomicBool>,
 ) {
     let ticks: u32 = (cycle_period.as_nanos() / tick_period.as_nanos()) as u32;
     let mut i: u32 = ticks;
-    let mut duty_sync_ticks: u32 = 0u32;
-    let mut mask_sync: u8 = 0x00_u8;
+    let mut duty_sync_ticks: [u32; 8] = [0; 8];// = array_init(|_| 0_u32);
     let mut now: std::time::Instant;
+    let mut blank: u8;
 
     loop {
         now = std::time::Instant::now();
@@ -44,9 +43,9 @@ pub fn pwm_ctrl(
             // Reached cycle end, restart i value (0), update mutexed values;
             //
             i = 0;
-            mask_sync = *mask.lock().expect("Mutex mask copy error");
-            duty_sync_ticks =
-                (*duty.lock().expect("Mutex duty copy error") * ticks as f32).round() as u32;
+            for (j, d) in (*duty).iter().enumerate() {
+                duty_sync_ticks[j] = (*d.lock().expect("Mutex duty copy error") * ticks as f32).round() as u32;
+            }
         }
 
         //
@@ -54,11 +53,15 @@ pub fn pwm_ctrl(
         //
 
         unsafe {
-            *byte.ptr = if i < duty_sync_ticks {
-                mask_sync
-            } else {
-                0x00_u8
-            };
+            blank = 0_u8;
+            for (j, dt) in duty_sync_ticks.iter().enumerate() {
+                blank |= if i < *dt {
+                    (1<<j) as u8
+                } else {
+                    0x00_u8
+                };
+            }
+            *byte.ptr = blank;
         }
 
         i += 1;

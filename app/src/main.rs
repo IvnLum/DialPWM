@@ -1,3 +1,4 @@
+use array_init::array_init;
 use clap::Parser;
 use fltk::*;
 use serialport::new;
@@ -51,18 +52,6 @@ fn update_duty(duty: Arc<Mutex<f32>>, val: f32) {
     *duty.lock().expect("Duty update failed") = val;
 }
 
-/// To be referenced Update PWM Bitmask function that acts as an intermediate logic call function
-///
-/// It can be updated without involving UI internal handling.
-///
-/// Arguments:
-///
-/// * `mask` - Thread safe Mutexed reference to the target bitmask to be updated.
-/// * `Val` - bitmask target value.
-fn update_mask(mask: Arc<Mutex<u8>>, val: u8) {
-    *mask.lock().expect("Mask update failed") = val;
-}
-
 fn main() {
     //
     // Args parse (serial config & thread id handling).
@@ -94,17 +83,16 @@ fn main() {
     };
 
     //
-    // Mutexed pwm duty & mask control (GUI update & stdin).
+    // Mutexed pwm duty control 
     //
 
-    let shared_mask = Arc::new(Mutex::new(0x00_u8));
-    let shared_pwm = Arc::new(Mutex::new(0_f32));
+    let pwm: [Arc<Mutex<f32>>; 8] = array_init(|_| Arc::new(Mutex::new(0f32)));
+    let shared_pwm: Arc<[Arc<Mutex<f32>>; 8]> = Arc::new(pwm.clone());
 
     let (s_efl0, s_efl1) = (end_flag.clone(), end_flag.clone());
 
     let (s_pwm0, s_pwm1) = (shared_pwm.clone(), shared_pwm.clone());
 
-    let (s_mask0, s_mask1) = (shared_mask.clone(), shared_mask.clone());
 
     //
     // Mutexed serial (safe control between threads)
@@ -138,7 +126,6 @@ fn main() {
             Duration::from_micros(cycle_period as u64),
             Duration::from_micros(tick_period as u64),
             s_pwm0,
-            s_mask0,
             s_efl1,
         );
     });
@@ -150,9 +137,11 @@ fn main() {
     ui::ui::UI_UPDATE_DUTY_FN
         .set((update_duty, s_pwm1))
         .unwrap();
-    ui::ui::UI_UPDATE_MASK_FN
-        .set((update_mask, s_mask1))
-        .unwrap();
+/*
+    let aa: [f32;3] = [1f32, 7f32, 9f32];
+    let th = thread::spawn(move || {
+        test(aa);
+    });*/
 
     let app = app::App::default().with_scheme(app::Scheme::Gtk);
     let _ = ui::ui::UserInterface::make_window();
@@ -163,4 +152,10 @@ fn main() {
 
     writer_thread.join().expect("Writer thread crashed");
     update_thread.join().expect("Update thread crashed");
+}
+
+fn test(v: [f32; 3]) {
+    for val in v {
+        println!("Val: {}", val);
+    }
 }

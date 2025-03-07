@@ -11,6 +11,7 @@ libc = "0.2.169"
 windows = { version = "0.60.0", features = ["Win32_System_Threading"] }
 fltk = "1.5.4"
 fl2rust-macro = "0.7.0"
+array-init = "2.1.0"
 
 [profile.dev]
 opt-level = 0
