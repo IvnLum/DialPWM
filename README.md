@@ -9,7 +9,7 @@
   <img height=400 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_v0.1.5_rounded.png" />
 </p>
 
-> Totally independent 8 bit pwm control
+> Totally independent 8 bit pwm control in version 0.1.5
 
 <br/>
 
