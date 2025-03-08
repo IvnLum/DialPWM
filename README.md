@@ -1,6 +1,6 @@
 # DialPWM
 
-Generate and test PWM signals with no dedicated controller through UART & register buffering.
+### Generate and test PWM signals with no dedicated controller through UART & register buffering.
 <p align="center">
   <img height=300 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_rounded.png" />
 </p>
