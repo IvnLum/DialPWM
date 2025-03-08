@@ -15,7 +15,7 @@ use crate::util::thread_misc::spin_sleep;
 ///
 pub fn write_serial(
     serial: Arc<Mutex<Box<dyn SerialPort>>>,
-    byte: RawPtr<u8>,
+    byte: [RawPtr<u8>; 8],
     end: Arc<AtomicBool>,
 ) {
     let mut now: std::time::Instant;
@@ -34,7 +34,16 @@ pub fn write_serial(
             if let Err(e) = serial
                 .lock()
                 .expect("Mutex write error!")
-                .write_all(&[*byte.ptr])
+                .write_all(&[
+                    (*byte[0].ptr)<<0 |
+                    (*byte[1].ptr)<<1 |
+                    (*byte[2].ptr)<<2 |
+                    (*byte[3].ptr)<<3 |
+                    (*byte[4].ptr)<<4 |
+                    (*byte[5].ptr)<<5 |
+                    (*byte[6].ptr)<<6 |
+                    (*byte[7].ptr)<<7
+                ])
             {
                 eprintln!("Failed to write: {}", e);
             }

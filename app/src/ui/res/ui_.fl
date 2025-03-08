@@ -1,0 +1,51 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0309
+header_name {.h}
+code_name {.cxx}
+class UserInterface {open
+} {
+  Function {make_window()} {open
+  } {
+    Fl_Window {} {
+      label DialPWM open
+      xywh {852 709 237 193} type Double color 7 labelfont 4 align 80 visible
+    } {
+      Fl_Dial {} {
+        callback from_ui_on_dial_change
+        xywh {78 75 90 90} box OFLAT_BOX color 47
+      }
+      Fl_Input {} {
+        label {Start(%)}
+        callback from_ui_set_a_duty
+        xywh {65 165 40 25} when 8
+      }
+      Fl_Input {} {
+        label {End(%)}
+        callback from_ui_set_b_duty
+        xywh {140 165 40 25} align 8 when 8
+      }
+      Fl_Input {} {
+        label {Bitmask :}
+        callback from_ui_set_mask
+        xywh {75 45 90 25}
+      }
+      Fl_Button {} {
+        label OK
+        callback from_ui_update_mask
+        xywh {175 45 25 25} box OFLAT_BOX color 14 labelfont 1 labelcolor 7
+      }
+      Fl_Menu_Bar {} {open
+        xywh {0 0 238 30} box FLAT_BOX color 14 labelfont 1 textfont 1
+      } {
+        MenuItem {} {
+          label DialPWM
+          xywh {0 0 36 21} labelfont 1 labelsize 12 labelcolor 7
+        }
+      }
+      Fl_Output {} {
+        label {0.00 %} selected
+        xywh {145 110 0 20} box FLAT_BOX color 47 labelfont 1 labelsize 9 labelcolor 7 textfont 14 textcolor 7
+      }
+    }
+  }
+}

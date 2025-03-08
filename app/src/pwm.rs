@@ -16,7 +16,7 @@ use crate::util::thread_misc::spin_sleep;
 /// * `mask` - Mutexed Bitmask that allows multiple channel control (For now from same generated PWM).
 ///
 pub fn pwm_ctrl(
-    byte: RawPtr<u8>,
+    byte: [RawPtr<u8>; 8],
     cycle_period: Duration,
     tick_period: Duration,
     duty: Arc<[Arc<Mutex<f32>>; 8]>,
@@ -24,9 +24,8 @@ pub fn pwm_ctrl(
 ) {
     let ticks: u32 = (cycle_period.as_nanos() / tick_period.as_nanos()) as u32;
     let mut i: u32 = ticks;
-    let mut duty_sync_ticks: [u32; 8] = [0; 8];// = array_init(|_| 0_u32);
+    let mut duty_sync_ticks: [u32; 8] = [0; 8]; // = array_init(|_| 0_u32);
     let mut now: std::time::Instant;
-    let mut blank: u8;
 
     loop {
         now = std::time::Instant::now();
@@ -44,7 +43,8 @@ pub fn pwm_ctrl(
             //
             i = 0;
             for (j, d) in (*duty).iter().enumerate() {
-                duty_sync_ticks[j] = (*d.lock().expect("Mutex duty copy error") * ticks as f32).round() as u32;
+                duty_sync_ticks[j] =
+                    (*d.lock().expect("Mutex duty copy error") * ticks as f32).round() as u32;
             }
         }
 
@@ -53,15 +53,13 @@ pub fn pwm_ctrl(
         //
 
         unsafe {
-            blank = 0_u8;
             for (j, dt) in duty_sync_ticks.iter().enumerate() {
-                blank |= if i < *dt {
-                    (1<<j) as u8
-                } else {
-                    0x00_u8
-                };
+                if  i == *dt {
+                    *byte[j].ptr = 0;
+                } else if i == 0 {
+                    *byte[j].ptr = 1;
+                }
             }
-            *byte.ptr = blank;
         }
 
         i += 1;

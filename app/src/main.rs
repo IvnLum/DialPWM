@@ -77,22 +77,36 @@ fn main() {
     //
     let end_flag = Arc::new(AtomicBool::new(false));
 
-    let mut byte = 0_u8;
-    let raw_ptr: util::raw_ptr::RawPtr<u8> = util::raw_ptr::RawPtr {
-        ptr: &mut byte as *mut u8,
-    };
+    let mut byte:[u8;8] = [0_u8; 8];
+    let raw_ptr:[util::raw_ptr::RawPtr<u8>;8] = array_init(|i|
+        util::raw_ptr::RawPtr {ptr: &mut byte[i] as *mut u8}
+    );
 
     //
-    // Mutexed pwm duty control 
+    // Mutexed pwm duty control
     //
 
     let pwm: [Arc<Mutex<f32>>; 8] = array_init(|_| Arc::new(Mutex::new(0f32)));
-    let shared_pwm: Arc<[Arc<Mutex<f32>>; 8]> = Arc::new(pwm.clone());
+    let shared_pwm: Arc<[Arc<Mutex<f32>>; 8]> = Arc::new(pwm);
 
     let (s_efl0, s_efl1) = (end_flag.clone(), end_flag.clone());
 
     let (s_pwm0, s_pwm1) = (shared_pwm.clone(), shared_pwm.clone());
 
+    //
+    // UI dials
+    //
+    let dial: [Arc<Mutex<ui::ui::DialCtrl>>; 8] = array_init(|_| {
+        Arc::new(Mutex::new(ui::ui::DialCtrl {
+            value: 0.0_f32,
+            min: 0.0_f32,
+            max: 0.0_f32,
+            extern_fn: update_duty,
+        }))
+    });
+    let shared_dial = Arc::new(dial);
+
+    let s_dia0 = shared_dial.clone();
 
     //
     // Mutexed serial (safe control between threads)
@@ -131,17 +145,10 @@ fn main() {
     });
 
     //
-    // Share duty and mask references to UI handler functions
+    // Share duty reference to UI handler functions
     //
-
-    ui::ui::UI_UPDATE_DUTY_FN
-        .set((update_duty, s_pwm1))
-        .unwrap();
-/*
-    let aa: [f32;3] = [1f32, 7f32, 9f32];
-    let th = thread::spawn(move || {
-        test(aa);
-    });*/
+    let _ = ui::ui::DIAL.set(s_dia0);
+    let _ = ui::ui::PWM.set(s_pwm1);
 
     let app = app::App::default().with_scheme(app::Scheme::Gtk);
     let _ = ui::ui::UserInterface::make_window();
