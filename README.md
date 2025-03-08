@@ -101,7 +101,7 @@ target/debug/DialPWM -l /dev/ttyUSB1 -b 460800 -s 0 -c 20000 -t 1 -p 1
 <br/>
 
 <p align="center">
-  <img height=500 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/fan.gif" alt="animated" />
+  <img height=475 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/fan.gif" alt="animated" />
 </p>
 
 > Testing GPU (2-pin + TIP120)  & CPU 4-pin fans at 500hz PWM
