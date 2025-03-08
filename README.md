@@ -5,6 +5,13 @@ Generate and test PWM signals with no dedicated controller through UART & regist
   <img height=300 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_rounded.png" />
 </p>
 
+<p align="center">
+  <img height=400 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_v0.1.5_rounded.png" />
+</p>
+
+> Totally independent 8 bit pwm control
+
+<br/>
 
 ## Direct PWM Generation using CPU
 Using **CPU PWM** simulation, it aims to provide a fast way of testing hardware control relying on PWM signals using an USB-UART bridge and a register based buffer as a **passthrough**.
