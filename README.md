@@ -2,11 +2,11 @@
 
 ### Generate and test PWM signals with no dedicated controller through UART & register buffering.
 <p align="center">
-  <img height=300 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_rounded.png" />
+  <img height=250 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_rounded.png" />
 </p>
 
 <p align="center">
-  <img height=400 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_v0.1.5_rounded.png" />
+  <img height=300 src="https://raw.githubusercontent.com/IvnLum/DialPWM/main/anim/DialPWM_v0.1.5_rounded.png" />
 </p>
 
 > Totally independent 8 bit pwm control in version 0.1.5
