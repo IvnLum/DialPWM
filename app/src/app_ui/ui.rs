@@ -1,5 +1,4 @@
 use fltk::prelude::*;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 
 pub struct DialCtrl {
@@ -231,4 +230,4 @@ fn from_ui_set_a_duty_7(input: &mut Input) {
     from_ui_set_a_duty(input, 7);
 }
 
-fl2rust_macro::include_ui! {"src/ui/res/ui.fl"}
+fl2rust_macro::include_ui! {"src/app_ui/res/ui.fl"}

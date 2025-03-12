@@ -9,7 +9,7 @@ use std::time::Duration;
 
 mod pwm;
 mod serial_ctrl;
-mod ui;
+mod app_ui;
 mod util;
 
 #[derive(Parser, Default, Debug)]
@@ -77,10 +77,10 @@ fn main() {
     //
     let end_flag = Arc::new(AtomicBool::new(false));
 
-    let mut byte:[u8;8] = [0_u8; 8];
-    let raw_ptr:[util::raw_ptr::RawPtr<u8>;8] = array_init(|i|
-        util::raw_ptr::RawPtr {ptr: &mut byte[i] as *mut u8}
-    );
+    let mut byte: [u8; 8] = [0_u8; 8];
+    let raw_ptr: [util::raw_ptr::RawPtr<u8>; 8] = array_init(|i| util::raw_ptr::RawPtr {
+        ptr: &mut byte[i] as *mut u8,
+    });
 
     //
     // Mutexed pwm duty control
@@ -96,8 +96,8 @@ fn main() {
     //
     // UI dials
     //
-    let dial: [Arc<Mutex<ui::ui::DialCtrl>>; 8] = array_init(|_| {
-        Arc::new(Mutex::new(ui::ui::DialCtrl {
+    let dial: [Arc<Mutex<app_ui::ui::DialCtrl>>; 8] = array_init(|_| {
+        Arc::new(Mutex::new(app_ui::ui::DialCtrl {
             value: 0.0_f32,
             min: 0.0_f32,
             max: 0.0_f32,
@@ -147,11 +147,11 @@ fn main() {
     //
     // Share duty reference to UI handler functions
     //
-    let _ = ui::ui::DIAL.set(s_dia0);
-    let _ = ui::ui::PWM.set(s_pwm1);
+    let _ = app_ui::ui::DIAL.set(s_dia0);
+    let _ = app_ui::ui::PWM.set(s_pwm1);
 
     let app = app::App::default().with_scheme(app::Scheme::Gtk);
-    let _ = ui::ui::UserInterface::make_window();
+    let _ = app_ui::ui::UserInterface::make_window();
 
     app.run().unwrap();
 
@@ -159,10 +159,4 @@ fn main() {
 
     writer_thread.join().expect("Writer thread crashed");
     update_thread.join().expect("Update thread crashed");
-}
-
-fn test(v: [f32; 3]) {
-    for val in v {
-        println!("Val: {}", val);
-    }
 }

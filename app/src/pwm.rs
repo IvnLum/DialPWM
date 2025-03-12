@@ -54,7 +54,7 @@ pub fn pwm_ctrl(
 
         unsafe {
             for (j, dt) in duty_sync_ticks.iter().enumerate() {
-                if  i == *dt {
+                if i == *dt {
                     *byte[j].ptr = 0;
                 } else if i == 0 {
                     *byte[j].ptr = 1;
